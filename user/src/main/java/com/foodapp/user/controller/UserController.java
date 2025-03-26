@@ -49,4 +49,9 @@ public class UserController {
         // Step 1: Call the service method to handle the login logic
         return userService.loginUser(user);
     }
+
+    @GetMapping(path = "/users/{userId}/email")
+    public String getUserByEmail(@PathVariable int userId){
+        return userService.getUserByEmail(userId);
+    }
 }

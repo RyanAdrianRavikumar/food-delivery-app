@@ -16,4 +16,8 @@ public class MenuService {
     public List<MenuItems> getMenuByRestaurantId(int restaurantId){
         return menuRepository.findByRestaurantId(restaurantId);
     }
+
+    public MenuItems findById(int menuItemId){
+        return menuRepository.findById(menuItemId).orElse(null);
+    }
 }

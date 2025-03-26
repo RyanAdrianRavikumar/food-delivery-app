@@ -67,5 +67,7 @@ public class UserService {
         }
     }
 
-
+    public String getUserByEmail(int userId){
+        return userRepository.findEmailById(userId);
+    }
 }

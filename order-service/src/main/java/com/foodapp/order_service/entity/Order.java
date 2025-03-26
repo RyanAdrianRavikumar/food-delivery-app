@@ -12,7 +12,6 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
     private int id;
 
     @Column(name = "user_id")
@@ -21,10 +20,14 @@ public class Order {
     @Column(name = "restaurant_id")
     private int restaurantId;
 
-    @ElementCollection
-    @CollectionTable(name = "order_menu_items", joinColumns = @JoinColumn(name = "order_id"))
-    @Column(name = "menu_item_id")
-    private List<Integer> menuItemIds;
+    @Column(name = "driver_id", nullable = true)
+    private Integer driverId;
+
+    @Column(name = "discount_id", nullable = true)
+    private Integer discountId;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderMenuItem> menuItems;
 
     public int getId() {
         return id;
@@ -50,11 +53,27 @@ public class Order {
         this.restaurantId = restaurantId;
     }
 
-    public List<Integer> getMenuItemIds() {
-        return menuItemIds;
+    public Integer getDriverId() {
+        return driverId;
     }
 
-    public void setMenuItemIds(List<Integer> menuItemIds) {
-        this.menuItemIds = menuItemIds;
+    public void setDriverId(Integer driverId) {
+        this.driverId = driverId;
+    }
+
+    public Integer getDiscountId() {
+        return discountId;
+    }
+
+    public void setDiscountId(Integer discountId) {
+        this.discountId = discountId;
+    }
+
+    public List<OrderMenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    public void setMenuItems(List<OrderMenuItem> menuItems) {
+        this.menuItems = menuItems;
     }
 }
