@@ -3,7 +3,12 @@ package com.foodapp.menu_service.service;
 import com.foodapp.menu_service.entity.MenuItems;
 import com.foodapp.menu_service.repository.MenuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -19,5 +24,19 @@ public class MenuService {
 
     public MenuItems findById(int menuItemId){
         return menuRepository.findById(menuItemId).orElse(null);
+    }
+
+    public MenuItems updateMenuItemPrice(int menuItemId, Double newPrice) {
+        // Fetch the menu item by ID
+        MenuItems menuItem = menuRepository.findById(menuItemId).orElse(null);
+
+        if (menuItem != null) {
+            // Update the price
+            menuItem.setPrice(newPrice);
+            // Save the updated entity
+            menuRepository.save(menuItem);
+        }
+
+        return menuItem;
     }
 }

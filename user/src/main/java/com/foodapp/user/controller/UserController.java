@@ -20,12 +20,12 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @GetMapping(path = "users/{id}")
+    @GetMapping(path = "/users/{id}")
     public User getUserById(@PathVariable int id){
         return userService.getUserById(id);
     }
 
-    @PostMapping(path = "/register")
+    @PostMapping(path = "/users/register")
     public ResponseEntity<String> registerUser(@RequestBody User user){
         try {
             // Register the user
@@ -44,9 +44,8 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/login")
+    @PostMapping(path = "/users/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
-        // Step 1: Call the service method to handle the login logic
         return userService.loginUser(user);
     }
 

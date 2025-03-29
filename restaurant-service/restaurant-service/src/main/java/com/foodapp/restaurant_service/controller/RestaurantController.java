@@ -9,18 +9,17 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://192.168.1.18:3000")
-@RequestMapping("/restaurants")
 public class RestaurantController {
 
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping(path = "/all")
+    @GetMapping(path = "/restaurants")
     public List<Restaurant> getAllRestaurants(){
         return restaurantService.getAllRestaurants();
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/restaurants/{id}")
     public Restaurant getRestaurantById(@PathVariable int id){
         return restaurantService.getRestaurantById(id);
     }

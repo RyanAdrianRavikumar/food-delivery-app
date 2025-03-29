@@ -14,7 +14,7 @@ public class DeliveryDriverController {
     @Autowired
     DeliveryDriverService deliveryDriverService;
 
-    @GetMapping(path = "drivers/all")
+    @GetMapping(path = "drivers")
     public List<DeliveryDriver> getAllDrivers(){
         return deliveryDriverService.getAllDrivers();
     }

@@ -14,9 +14,9 @@ public class EmailController {
     private SendEmailService sendEmailService;
 
     @PostMapping("/sendOrderConfirmation/{userId}")
-    public ResponseEntity<String> sendOrderConfirmation(@PathVariable int userId) {
-        sendEmailService.sendOrderConfirmationEmail(userId);
-        return ResponseEntity.ok("Order confirmation email sent successfully to user " + userId);
+    public ResponseEntity<String> sendOrderConfirmation(@PathVariable int userId, @RequestParam double totalAmount) { // Accept totalAmount as a parameter
+        sendEmailService.sendOrderConfirmationEmail(userId, totalAmount); // Updated to include totalAmount
+        return ResponseEntity.ok("Order confirmation email sent successfully to user " + userId + " with total amount " + totalAmount);
     }
 }
 

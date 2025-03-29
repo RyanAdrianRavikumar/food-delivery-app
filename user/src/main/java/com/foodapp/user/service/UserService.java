@@ -39,23 +39,22 @@ public class UserService {
             return "Email is already in use."; // Email already exists
         }
 
-        // Save the user to the database without password hashing
+        // Save user and send response message
         userRepository.save(user);
-
         return "User registered successfully.";
     }
 
     public ResponseEntity<?> loginUser(User user) {
-        // Step 1: Find the user by email
+        // Find the user by email
         User existingUser = userRepository.findByEmail(user.getEmail());
 
-        // Step 2: Check if the user exists
+        // Check if the user exists
         if (existingUser == null) {
             // If user not found, return 404 Not Found
             return ResponseEntity.status(404).body("User not found");
         }
 
-        // Step 3: Validate the password
+        // Validate the password
         if (user.getPassword().equals(existingUser.getPassword())) {
             // If password is correct, create a response with userId
             Map<String, Object> response = new HashMap<>();

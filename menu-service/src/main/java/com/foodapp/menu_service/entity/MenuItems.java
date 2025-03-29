@@ -1,6 +1,9 @@
 package com.foodapp.menu_service.entity;
 
 import jakarta.persistence.*;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Base64;
 
 @Entity
 public class MenuItems {
@@ -17,6 +20,10 @@ public class MenuItems {
 
     @Column(name = "restaurant_id")
     private int restaurantId;
+
+    @Lob
+    @Column(name = "food_image", columnDefinition = "LONGBLOB")
+    private Blob picture;
 
     public int getId() {
         return id;
@@ -48,5 +55,23 @@ public class MenuItems {
 
     public void setRestaurantId(int restaurantId) {
         this.restaurantId = restaurantId;
+    }
+
+    public String getPicture() {
+        if (picture != null) {
+            try {
+                int blobLength = (int) picture.length();
+                byte[] blobAsBytes = picture.getBytes(1, blobLength);
+                return Base64.getEncoder().encodeToString(blobAsBytes);
+            } catch (SQLException e) {
+                e.printStackTrace(); // Handle the exception appropriately
+                return null; // Or throw an exception
+            }
+        }
+        return null;
+    }
+
+    public void setPicture(Blob picture) {
+        this.picture = picture;
     }
 }

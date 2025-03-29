@@ -25,6 +25,12 @@ public class OrderMenuItem {
         return id;
     }
 
+    @Column(name = "price")
+    private Double price = (double) 0.0;
+
+    @Column(name = "qty")
+    private int qty;
+
     public void setId(int id) {
         this.id = id;
     }
@@ -43,5 +49,25 @@ public class OrderMenuItem {
 
     public void setMenuItemId(int menuItemId) {
         this.menuItemId = menuItemId;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
     }
 }
