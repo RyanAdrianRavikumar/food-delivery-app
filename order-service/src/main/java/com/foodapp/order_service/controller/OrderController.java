@@ -33,13 +33,18 @@ public class OrderController {
         }
     }
 
-    @GetMapping("orders/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public Order getOrderById(@PathVariable int orderId) {
         return orderService.getOrderById(orderId);
     }
 
-    @GetMapping("orders")
+    @GetMapping("/orders")
     public List<Order> getAllOrders(){
         return orderService.getAllOrders();
+    }
+
+    @GetMapping("/users/{userId}/orders")
+    public List<Order> getOrderByUserId(@PathVariable int userId){
+        return orderService.findOrderByUserId(userId);
     }
 }

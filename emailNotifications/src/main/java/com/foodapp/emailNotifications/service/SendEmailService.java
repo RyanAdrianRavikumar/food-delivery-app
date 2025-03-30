@@ -37,14 +37,15 @@ public class SendEmailService {
         }
     }
 
-    public void sendOrderConfirmationEmail(int userId) {
+    public void sendOrderConfirmationEmail(int userId, double totalAmount) {
         try {
             String emailUrl = USER_SERVICE_URL + userId + "/email";
             String userEmail = restTemplate.getForObject(emailUrl, String.class);
 
             if (userEmail != null && !userEmail.isEmpty()) {
                 String subject = "Order Confirmation";
-                String body = "Thank you for placing an order! Your order is being processed.";
+                String body = "Thank you for placing an order! Your order is being processed. " +
+                        "The total amount for your order is $" + totalAmount + ".";
 
                 sendEmail(userEmail, body, subject);
             } else {
@@ -55,4 +56,5 @@ public class SendEmailService {
             e.printStackTrace();
         }
     }
+
 }

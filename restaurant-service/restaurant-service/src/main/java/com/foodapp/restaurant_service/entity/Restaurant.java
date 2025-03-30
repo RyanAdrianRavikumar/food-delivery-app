@@ -3,6 +3,10 @@ package com.foodapp.restaurant_service.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Base64;
+
 @Entity
 @Table(name = "restaurants")
 public class Restaurant {
@@ -25,6 +29,10 @@ public class Restaurant {
 
     @Column(name = "status")
     private String status;
+
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB")
+    private Blob picture;
 
     public int getId() {
         return id;
@@ -72,5 +80,23 @@ public class Restaurant {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPicture() {
+        if (picture != null) {
+            try {
+                int blobLength = (int) picture.length();
+                byte[] blobAsBytes = picture.getBytes(1, blobLength);
+                return Base64.getEncoder().encodeToString(blobAsBytes);
+            } catch (SQLException e) {
+                e.printStackTrace(); // Handle the exception appropriately
+                return null; // Or throw an exception
+            }
+        }
+        return null;
+    }
+
+    public void setPicture(Blob picture) {
+        this.picture = picture;
     }
 }

@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,11 +27,11 @@ public class OrderService {
     private final String RESTAURANT_SERVICE_URL = "http://localhost:8081/restaurants/";
     private final String MENU_SERVICE_URL = "http://localhost:8082/menu/";
     private final String EMAIL_SERVICE_URL = "http://localhost:8086/email/sendOrderConfirmation/";
+    private final String DISCOUNT_SERVICE_URL = "http://localhost:8085/discounts/";
 
     public Order placeOrder(Order order) {
         // Validate user
         String userUrl = USER_SERVICE_URL + order.getUserId();
-        // Get user details wrapped into a response object
         ResponseEntity<Object> userResponse = restTemplate.getForEntity(userUrl, Object.class);
 
         if (!userResponse.getStatusCode().is2xxSuccessful()) {
@@ -38,36 +40,71 @@ public class OrderService {
 
         // Validate restaurant
         String restaurantUrl = RESTAURANT_SERVICE_URL + order.getRestaurantId();
-        // Get restaurant details wrapped into a response object
         ResponseEntity<Object> restaurantResponse = restTemplate.getForEntity(restaurantUrl, Object.class);
 
         if (!restaurantResponse.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Restaurant not found");
         }
 
-        // Set order reference for each menu item
+        // Set initial bill amount to 0
+        double totalAmount = 0;
+
+        // Set order reference for each menu item and validate qty
         for (OrderMenuItem menuItem : order.getMenuItems()) {
-            menuItem.setOrder(order);  // Ensure the order reference is set for each menu item
+            menuItem.setOrder(order); // Set the order reference
 
             // Validate menu item
             String menuUrl = MENU_SERVICE_URL + menuItem.getMenuItemId();
-            // Get each menu item details wrapped into a response object
             ResponseEntity<Object> menuResponse = restTemplate.getForEntity(menuUrl, Object.class);
 
             if (!menuResponse.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException("Menu item not found: " + menuItem.getMenuItemId());
             }
+
+            // Validate and log qty
+            if (menuItem.getQty() <= 0) {
+                throw new RuntimeException("Invalid quantity for menu item ID: " + menuItem.getMenuItemId());
+            }
+            System.out.println("MenuItem ID: " + menuItem.getMenuItemId() + ", Qty: " + menuItem.getQty());
+
+            // Add menu item price * quantity to the bill amount
+            double menuItemPrice = extractPriceFromResponse(menuResponse);
+            totalAmount += menuItemPrice * menuItem.getQty(); // Multiply by qty
         }
 
-        // Save the order (cascade will save associated order menu items if configured)
+        // Apply Discount
+        if (order.getDiscountId() != null) { // Check if discount ID is provided
+            String discountUrl = DISCOUNT_SERVICE_URL + order.getDiscountId();
+            ResponseEntity<Map> discountResponse = restTemplate.getForEntity(discountUrl, Map.class);
+
+            if (discountResponse.getStatusCode().is2xxSuccessful()) {
+                Map<String, Object> discountBody = discountResponse.getBody();
+                if (discountBody != null && discountBody.containsKey("discountValue")) {
+                    double discountPercentage = (double) discountBody.get("discountValue"); // Extract discountValue
+                    totalAmount -= totalAmount * (discountPercentage / 100); // Apply the discount
+                }
+            } else {
+                throw new RuntimeException("Discount not found for ID: " + order.getDiscountId());
+            }
+        }
+
+        // Set the totalAmount to the order
+        order.setTotalAmount(totalAmount);
+
+        // Save the order
         Order savedOrder = orderRepository.save(order);
 
-        // Send the order confirmation email using emailNotification microservice
-        String emailUrl = EMAIL_SERVICE_URL + savedOrder.getUserId();
-        restTemplate.postForObject(emailUrl, null, String.class);
+        // Send the order confirmation email
+        String emailUrl = EMAIL_SERVICE_URL + savedOrder.getUserId() + "?totalAmount=" + savedOrder.getTotalAmount();
+        ResponseEntity<String> response = restTemplate.postForEntity(emailUrl, null, String.class);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Failed to send order confirmation email");
+        }
 
         return savedOrder;
     }
+
 
     public Order getOrderById(int orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);
@@ -80,5 +117,21 @@ public class OrderService {
 
     public List<Order> getAllOrders(){
         return orderRepository.findAll();
+    }
+
+    public double extractPriceFromResponse(ResponseEntity<Object> menuResponse){
+        // Convert the response body to a Map to directly access the price field
+        Map<String, Object> responseBody = (Map<String, Object>) menuResponse.getBody();
+
+        // Get the price from the map (assuming the price field exists in the response)
+        if (responseBody != null && responseBody.containsKey("price")) {
+            return (Double) responseBody.get("price");
+        }
+
+        return 0.0;
+    }
+
+    public List<Order> findOrderByUserId(int userId){
+        return orderRepository.findOrderByUserId(userId);
     }
 }

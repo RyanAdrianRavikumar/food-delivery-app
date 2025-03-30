@@ -12,6 +12,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private int id;
 
     @Column(name = "user_id")
@@ -28,6 +29,11 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderMenuItem> menuItems;
+
+    @Column(name = "total_amount")
+    private double totalAmount;
+
+
 
     public int getId() {
         return id;
@@ -75,5 +81,13 @@ public class Order {
 
     public void setMenuItems(List<OrderMenuItem> menuItems) {
         this.menuItems = menuItems;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 }
