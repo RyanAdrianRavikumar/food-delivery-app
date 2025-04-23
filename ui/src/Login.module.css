@@ -1,0 +1,90 @@
+/* Login.module.css */
+.login-container {
+  max-width: 400px; /* Limit the width of the login box */
+  margin: 100px auto; /* Center it vertically and horizontally */
+  padding: 20px; /* Add some padding */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  background-color: #fff; /* White background for contrast */
+  text-align: center; /* Center align text */
+}
+
+h2 {
+  color: #FF6347; /* Tomato color for the heading */
+  margin-bottom: 20px; /* Space between the heading and the form */
+  font-size: 24px; /* Slightly larger font size */
+}
+
+.login-form {
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack items vertically */
+  gap: 15px; /* Space between form fields */
+}
+
+label {
+  font-weight: bold; /* Bold labels for better readability */
+  color: #555; /* Darker text for labels */
+}
+
+.login-input {
+  padding: 10px; /* Space inside input fields */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 5px; /* Rounded corners for inputs */
+  font-size: 16px; /* Consistent font size */
+  transition: border 0.3s; /* Smooth transition for interactions */
+}
+
+.login-input:focus {
+  border-color: #FF6347; /* Highlight border color on focus */
+  outline: none; /* Remove the default outline */
+}
+
+.error-message {
+  color: red; /* Red color for error messages */
+  font-size: 14px; /* Smaller font for error text */
+  margin: 10px 0; /* Space above and below the message */
+}
+
+.login-button {
+  padding: 12px; /* Space inside the button */
+  background-color: #FF6347; /* Tomato background color */
+  color: #fff; /* White text for buttons */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners for the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Consistent font size */
+  transition: background-color 0.3s; /* Smooth transition for hover */
+}
+
+.login-button:hover {
+  background-color: #e5533d; /* Darker tomato on hover */
+}
+
+p {
+  margin-top: 15px; /* Space above the paragraph */
+  color: #555; /* Darker text for the paragraph */
+}
+
+a {
+  color: #FF6347; /* Link color matching the theme */
+  text-decoration: none; /* Remove underline from links */
+}
+
+a:hover {
+  text-decoration: underline; /* Underline on hover for links */
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 20px; /* Smaller heading size on mobile */
+  }
+
+  .login-button {
+    font-size: 14px; /* Smaller button text on mobile */
+  }
+}
